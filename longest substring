@@ -1,0 +1,35 @@
+#include <stdio.h>
+#include <string.h>
+
+int lengthOfLongestSubstring(char* s) {
+    // Array to store the last seen index of all 128 ASCII characters
+    // Initialized to -1 to represent that the character hasn't been seen yet
+    int last_seen[128];
+    for (int i = 0; i < 128; i++) {
+        last_seen[i] = -1;
+    }
+
+    int max_length = 0;
+    int start = 0; // Left pointer of our sliding window
+
+    // Iterate through the string with the right pointer 'end'
+    for (int end = 0; s[end] != '\0'; end++) {
+        unsigned char current_char = s[end];
+
+        // If the character was seen inside the current window, move the start pointer
+        if (last_seen[current_char] >= start) {
+            start = last_seen[current_char] + 1;
+        }
+
+        // Update the last seen index of the current character
+        last_seen[current_char] = end;
+
+        // Calculate the current window size and update max_length if it's larger
+        int current_length = end - start + 1;
+        if (current_length > max_length) {
+            max_length = current_length;
+        }
+    }
+
+    return max_length;
+}

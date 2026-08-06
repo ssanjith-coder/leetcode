@@ -1,0 +1,32 @@
+#include <math.h>
+
+int maxArea(int* height, int heightSize) {
+    int left = 0;
+    int right = heightSize - 1;
+    int max_water = 0;
+
+    while (left < right) {
+        // Calculate the width between the two vertical lines
+        int width = right - left;
+        
+        // The water level is limited by the shorter line
+        int current_height = (height[left] < height[right]) ? height[left] : height[right];
+        
+        // Calculate the current area
+        int current_water = width * current_height;
+        
+        // Update the maximum water found so far
+        if (current_water > max_water) {
+            max_water = current_water;
+        }
+        
+        // Move the pointer that points to the shorter line inward
+        if (height[left] < height[right]) {
+            left++;
+        } else {
+            right--;
+        }
+    }
+
+    return max_water;
+}

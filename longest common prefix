@@ -1,0 +1,30 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+char* longestCommonPrefix(char** strs, int strsSize) {
+    // Edge case: if array is empty, return empty string
+    if (strsSize == 0) {
+        return "";
+    }
+
+    // Take the first string as our baseline reference
+    char* first_str = strs[0];
+    
+    // Scan vertically through each character index of the first string
+    for (int i = 0; first_str[i] != '\0'; i++) {
+        char current_char = first_str[i];
+        
+        // Check this character against all other strings
+        for (int j = 1; j < strsSize; j++) {
+            // Stop if the other string ends, or if characters do not match
+            if (strs[j][i] == '\0' || strs[j][i] != current_char) {
+                // Terminate the prefix string at the current index
+                first_str[i] = '\0';
+                return first_str;
+            }
+        }
+    }
+    
+    return first_str;
+}

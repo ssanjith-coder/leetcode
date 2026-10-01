@@ -1,0 +1,55 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+/**
+ * Helper function for backtracking.
+ */
+void backtrack(int n, int open, int close, char* current, int index, int* returnSize, int* capacity, char*** res) {
+    // Base Case: When both open and close counts reach n, we found a valid combination
+    if (open == n && close == n) {
+        // Expand the capacity of the result array dynamically if needed
+        if (*returnSize >= *capacity) {
+            *capacity *= 2;
+            *res = (char**)realloc(*res, (*capacity) * sizeof(char*));
+        }
+        
+        // Allocate space for the completed string and null-terminator, then save it
+        (*res)[*returnSize] = (char*)malloc((2 * n + 1) * sizeof(char));
+        strcpy((*res)[*returnSize], current);
+        (*returnSize)++;
+        return;
+    }
+    
+    // Choice 1: Add an opening parenthesis if we haven't used all of them
+    if (open < n) {
+        current[index] = '(';
+        backtrack(n, open + 1, close, current, index + 1, returnSize, capacity, res);
+    }
+    
+    // Choice 2: Add a closing parenthesis if it doesn't exceed the open ones
+    if (close < open) {
+        current[index] = ')';
+        backtrack(n, open, close + 1, current, index + 1, returnSize, capacity, res);
+    }
+}
+
+/**
+ * Note: The returned array must be malloced, assume caller calls free().
+ */
+char** generateParenthesis(int n, int* returnSize) {
+    *returnSize = 0;
+    int capacity = 16;
+    
+    // Allocate the initial list of string pointers
+    char** res = (char**)malloc(capacity * sizeof(char*));
+    
+    // Buffer string to build combinations in-place during backtracking
+    char* current = (char*)malloc((2 * n + 1) * sizeof(char));
+    current[2 * n] = '\0'; // Set the null terminator at the fixed end
+    
+    backtrack(n, 0, 0, current, 0, returnSize, &capacity, &res);
+    
+    free(current); // Clean up the working buffer
+    return res;
+}
